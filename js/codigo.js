@@ -8,28 +8,29 @@ window.onload = function () {
     var nivel = 0;
     var filas = 0;
     var columnas = 0;
-    var minas =0;
+    var minas = 0;
     //listener para el nivel principiante que llama a la funcion crearTablero y le manda el numero de filas y columnas.
-    document.getElementById("prin").addEventListener("click",iniciarJuego , false)
+    document.getElementById("prin").addEventListener("click", iniciarJuego, false)
 
 
     document.getElementById("inter").addEventListener("click", iniciarJuego, false)
 
-    
-    
+    function iniciarJuego() {
 
-    function iniciarJuego(){
-        
-        if(this.id=="prin"){
-            nivel =1;
-        }else{
-            
-            nivel =2;
+        if (this.id == "prin") {
+            nivel = 1;
+        } else {
+
+            nivel = 2;
         }
-        
+        alert("entro comprobar nivel");
         comprobarNivel();
+        alert("entro crear tablero");
         crearTablero();
+        alert("inicializo minas");
         minas = iniMatrizMinas();
+        alert("entro generador bombas");
+        generadorBombas(minas);
     }
 
     function comprobarNivel() {
@@ -65,6 +66,8 @@ window.onload = function () {
                 input.classList.add("btn-default");
                 input.classList.add("tamInputs");
                 input.setAttribute("id", i + "X" + j);
+                //hacemos los listeners de los inputs
+                input.addEventListener("click", mostrarNumero, false);
                 //hacemos que el input cuelgue del td.
                 columna.appendChild(input);
                 //hacemos que el td cuelgue de la fila.
@@ -75,18 +78,47 @@ window.onload = function () {
 
         document.getElementById("tablero").appendChild(tabla);
     }
-    
-    function iniMatrizMinas(){
-        var tabla =[];
-        for(var i = 0; i< filas; i++){
-            for(var j = 0; i < columnas; i++){
-                tabla[i][j] = 0;                 
-            } 
+
+    /*
+            function iniMatrizMinas() {
+                var tabla = Array();
+                for (var i = 0; i < filas; i++) {
+                    tabla[i] = [];
+                    for (var j = 0; i < columnas; j++) {
+                        tabla[i][j] = "0";
+                    }
+                }
+                return tabla;
+
+            }
+    */
+    function iniMatrizMinas() {
+
+        var matriz;
+        for (var i = 0; i < filas; i++) {
+            matriz[i] = [];
         }
-        return tabla;
-        
+
+        // ponemos el valor de cada celda de la matriz
+        for (var i = 0; i < filas; i++) {
+            for (var j = 0; j < columnas; j++) {
+                matriz[i][j] = "0";
+            }
+        }
+
+
     }
-    
-    
+
+
+    function generadorBombas(minas) {
+        var randFila = Math.floor((Math.random() * (filas - 1)) + 0);
+        var randCol = Math.floor((Math.random() * (filas - 1)) + 0);
+        alert(randFila);
+        alert(randCol);
+    }
+
+    function mostrarNumero() {}
+
+
 
 }
