@@ -7,17 +7,18 @@ window.onload = function () {
     var numBombas = 0;
     //variable para la matriz con la que crearemos el tablero de juego.
     var minas = [];
+    var minasVacia = [];
     //variable que controla el numero de bombas acertadas
     var numAciertos = 0;
     //variable que controla el numero de espacios vacios descubiertos
     var casillasNoBomba = 0;
     //variables para las imagenes
     var blanco;
-    var bandera; 
+    var bandera;
     var fallo;
     var valor0;
     var valor1;
-    var valor2; 
+    var valor2;
     var valor3;
     var valor4;
     var valor5;
@@ -42,25 +43,31 @@ window.onload = function () {
 
             nivel = 2;
         }
-        
+
         comprobarNivel();
-        minas= iniMatrizMinas();
-        generadorBombas(minas);
-        var contador=0;
-        var contador0=0;
-        for(var i = 0; i<longitud; i++){
-            for(var j =0; j<longitud; j++){
-                if(minas[i][j]=="*"){
+        minasVacia = iniMatrizMinas();
+        minas = generadorBombas(minasVacia);
+        comprobarMinasAl();
+        crearTablero();
+    }
+
+    function contadorMinas(matriz) {
+        //--------------------------
+        var contador = 0;
+        var contador0 = 0;
+        for (var i = 0; i < longitud; i++) {
+            for (var j = 0; j < longitud; j++) {
+                if (matriz[i][j] == "*") {
                     contador++;
-                }else
+                } else
                     contador0++;
             }
-            
+
         }
-        alert("numero de minas introducidas:"+contador);
-        alert("numero de 0 introducidas:"+contador0);
-        comprobarMinasAl();
-        crearTablero(); 
+        alert("numero de minas introducidas:111" + contador);
+        alert("numero de 0 introducidas:" + contador0);
+        //-----------------------------------
+
     }
     //funcion que segun el nivel pone el tamaño del grid y el numero de bombas.
     function comprobarNivel() {
@@ -108,7 +115,7 @@ window.onload = function () {
     }
 
     function iniMatrizMinas() {
-        var matriz= [];
+        var matriz = [];
         for (var i = 0; i < longitud; i++) {
             matriz[i] = [];
         }
@@ -116,87 +123,89 @@ window.onload = function () {
         // ponemos el valor de cada celda de la matriz
         for (var i = 0; i < longitud; i++) {
             for (var j = 0; j < longitud; j++) {
-                matriz[i][j] = " ";
+                matriz[i][j] = 0;
             }
         }
-       return matriz
-        
+        return matriz
+
 
     }
 
-    function generadorBombas(matriz) {        
+    function generadorBombas(matriz) {
         var aux = numBombas;
-        alert(aux);
+
         while (aux > 0) {
-            
+
             var randFila = Math.floor((Math.random() * longitud));
             var randCol = Math.floor((Math.random() * longitud));
-            if (matriz[randFila][randCol] == " ") {                
-                matriz[randFila][randCol] == "*";               
+
+            if (matriz[randFila][randCol] == 0) {
+                matriz[randFila][randCol] = "*";
                 aux--;
+
             }
+
         }
-       
-        
+
+        return matriz;
+
+
     }
-    
+
     //funcion que evalua unas coordenadas y si hay bomba suma 1 y si no hay bomba o se sale del rango de la matriz suma 0
-    function sumatorioBombas(coordX, coordY){
-        alert("entro sumatoriobombas");
-        var sumatorio =0;
-        if(coordX <0 || coordX >=longitud || coordY < 0 || coordY>=longitud){
-            sumatorio= 0;
-            
-        }else{
-            if(minas[coordX][coordY]=="*"){
+    function sumatorioBombas(coordX, coordY) {
+        var sumatorio = 0;
+        if (coordX < 0 || coordX >= longitud || coordY < 0 || coordY >= longitud) {
+            sumatorio = 0;
+
+        } else {
+            if (minas[coordX][coordY] == "*") {
                 sumatorio = 1;
-                
+
             }
         }
-        alert(sumatorio);
         return sumatorio;
-        
+
     }
-    
+
     //funcion que suma los numeros de las casillas adyacentes a la casilla evaluadada
-    function calcularMinasAlrededor(coordX,coordY){
-        alert("entro calcularminasalrederor");
+    function calcularMinasAlrededor(coordX, coordY) {
+
         var minasAlrededor =
-            sumatorioBombas(coordX-1,coordY-1)+
-            sumatorioBombas(coordX-1,coordY)  +
-            sumatorioBombas(coordX-1,coordY+1)+
-            sumatorioBombas(coordX,coordY-1)  +
-            sumatorioBombas(coordX,coordY)    +
-            sumatorioBombas(coordX,coordY+1)  +
-            sumatorioBombas(coordX+1,coordY-1)+
-            sumatorioBombas(coordX+1,coordY)  +
-            sumatorioBombas(coordX+1,coordY+1);
-        alert(minasAlrededor);
+            sumatorioBombas(coordX - 1, coordY - 1) +
+            sumatorioBombas(coordX - 1, coordY) +
+            sumatorioBombas(coordX - 1, coordY + 1) +
+            sumatorioBombas(coordX, coordY - 1) +
+            sumatorioBombas(coordX, coordY) +
+            sumatorioBombas(coordX, coordY + 1) +
+            sumatorioBombas(coordX + 1, coordY - 1) +
+            sumatorioBombas(coordX + 1, coordY) +
+            sumatorioBombas(coordX + 1, coordY + 1);
+        //alert(minasAlrededor);
         return minasAlrededor;
-        
+
     }
-    
+
     //funcion que recorre todo el array y en cada casilla comprobamos cuantas bombas tiene alrededor
-    function comprobarMinasAl(){
-        
-        for(var i =0; i<longitud;i++){
-            for(var j= 0; j<longitud;j++){
-                if(minas[i][j]=="*"){
-                    minas[i][j]= calcularMinasAlrededor(i,j);
+    function comprobarMinasAl() {
+
+        for (var i = 0; i < longitud; i++) {
+            for (var j = 0; j < longitud; j++) {
+                if (minas[i][j] == "*") {
+                    minas[i][j] = calcularMinasAlrededor(i, j);
                 }
             }
         }
     }
-    
-    
+
+
     function clickIzquierdo(event) {
         var evento = event || window.Event;
-        
+
         if (evento.button == 0 && (document.getElementById("imagen-" + this.id).src == blanco.src)) {
             var coorMatriz = this.id.split("_");
             var x = coorMatriz[0];
             var y = coorMatriz[1];
-           
             mostrarTablero(x, y);
 
         }
@@ -209,13 +218,13 @@ window.onload = function () {
     function mostrarTablero(coordX, coordY) {
         if (coordX >= 0 && coordX < longitud && coordY >= 0 && coordY < longitud && (document.getElementById("imagen-" + coordX + "_" + coordY).src == blanco.src)) {
             var valor = minas[coordX][coordY];
-           
+
             switch (valor) {
                 case 1:
                     document.getElementById("imagen-" + coordX + "_" + coordY).src = valor1.src;
                     break;
                 case 2:
-                    document.getElementById("imagen-" +coordX + "_" + coordY).src = valor2.src;
+                    document.getElementById("imagen-" + coordX + "_" + coordY).src = valor2.src;
                     break;
                 case 3:
                     document.getElementById("imagen-" + coordX + "_" + coordY).src = valor3.src;
@@ -237,7 +246,7 @@ window.onload = function () {
                     break;
                 case 0:
                     document.getElementById("imagen-" + coordX + "_" + coordY).src = valor0.src;
-                    expansor(coordX,coordY);
+                    expansor(coordX, coordY);
                     break;
                 case "*":
                     document.getElementById("imagen-" + coordX + "_" + coordY).src = fallo.src;
@@ -251,20 +260,22 @@ window.onload = function () {
 
     }
     // funcion para expandir la casilla de alrededor
-    function expansor(coordX,coordY){
-        for (var i = coordX - 1; i <= coordX+1; i++) {
-                    for (var j = coordY - 1; j <= coordY+1; j++) {
-                        // anulamos mostrar lso rangos fuera de la cuadricula
-                        if (i >= 0 && i < longitud && j >=0 && j < longitud) {                
-                                if (document.getElementById("imagen-"+i+"_"+j).src == blanco.src && matriz[i][j]!="*") {                                   
-                                    mostrarTablero(i,j);
-                                        
-                                }
-                                
-                        }
+    function expansor(coordX, coordY) {
+       
+        for (var i = coordX - 1; i <= coordX + 1; i++) {
+            for (var j = coordY - 1; j <= coordY + 1; j++) {
+                // anulamos mostrar lso rangos fuera de la cuadricula
+                if (i >= 0 && i < longitud && j >= 0 && j < longitud) {
+                    
+                    if (document.getElementById("imagen-" + i + "_" + j).src == blanco.src && minas[i][j] != "*") {
+                        mostrarTablero(i, j);
+
                     }
+
                 }
-        
+            }
+        }
+
     }
 
     function crearListeners() {
@@ -280,37 +291,37 @@ window.onload = function () {
         // variables que recogen los iconos del juego
         blanco = new Image;
         blanco.src = "img/facingDown.png";
-        
+
         bandera = new Image;
         bandera.src = "img/flagged.png";
-        
+
         fallo = new Image;
         fallo.src = "img/fallo.gif";
-        
+
         valor0 = new Image;
         valor0.src = "img/0.png";
-        
+
         valor1 = new Image;
         valor1.src = "img/1.png";
-        
+
         valor2 = new Image;
         valor2.src = "img/2.png";
-        
+
         valor3 = new Image;
         valor3.src = "img/3.png";
-        
+
         valor4 = new Image;
         valor4.src = "img/4.png";
-        
+
         valor5 = new Image;
         valor5.src = "img/5.png";
-        
+
         valor6 = new Image;
         valor6.src = "img/6.png";
-        
+
         valor7 = new Image;
         valor7.src = "img/7.png";
-        
+
         valor8 = new Image;
         valor8.src = "img/8.png";
 
